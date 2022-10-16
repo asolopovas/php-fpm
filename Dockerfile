@@ -59,8 +59,8 @@ RUN docker-php-ext-install gd
 RUN pecl install \
     imagick \
     redis \
-    xdebug \
-    rm -r /tmp/pear
+    swoole \
+    xdebug
 
 # Enable PECL and PEAR extensions
 RUN docker-php-ext-enable \
@@ -83,36 +83,37 @@ RUN docker-php-ext-install \
     zip
 
 # Cleanup workspace dependencies
-RUN apk del -f .build-deps; \
-    rm -rf /tmp/*
+RUN apk del -f .build-deps; rm -rf /tmp/*
 
 # www-data group/userid 1000
 RUN  set -ex; usermod -u 1000 www-data; groupmod -g 1000 www-data; \
      chown -R 1000:1000 /var/www /home/www-data;
 
-# # Fix iconv alpinerror still pops up
-# RUN apk add --no-cache \
-#     --repository https://dl-cdn.alpinelinux.org/alpine/v3.15/community/ \
-#     --allow-untrusted \
-#     gnu-libiconv
-# ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-
 RUN apk add --no-cache \
-    bash \
     gifsicle \
     jpegoptim \
     libstdc++ \
     libwebp-tools \
     msmtp \
-    neovim \
     optipng \
-    php8-zip \
     pngquant \
+    php8-zip \
+    python3 \
+    python3-dev \
+    mysql-client \
+    py-pip \
     sudo \
     su-exec \
-    zsh-vcs
+    rsync \
+    bash \
+    fish \
+    sudo \
+    fd \
+    fzf \
+    ripgrep \
+    neovim
 
-RUN docker-php-ext-enable xdebug opcache
-
+RUN docker-php-ext-enable xdebug opcache swoole
+RUN mkdir -p /home/www-data/www; chown www-data:www-data /home/www-data/www
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
 RUN ln -sf $(which nvim) /usr/bin/vim
