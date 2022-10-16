@@ -1,5 +1,5 @@
 FROM surnet/alpine-wkhtmltopdf:3.10-0.12.6-small as wkhtmltopdf
-FROM php:8.1.6-fpm-alpine3.15
+FROM php:8.1.6-fpm-alpine3.16
 
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
@@ -86,8 +86,6 @@ RUN docker-php-ext-install \
 RUN apk del -f .build-deps; rm -rf /tmp/*
 
 # www-data group/userid 1000
-RUN  set -ex; usermod -u 1000 www-data; groupmod -g 1000 www-data; \
-     chown -R 1000:1000 /var/www /home/www-data;
 
 RUN apk add --no-cache \
     gifsicle \
@@ -113,6 +111,7 @@ RUN apk add --no-cache \
     ripgrep \
     neovim
 
+RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/fish -g www www
 RUN docker-php-ext-enable xdebug opcache swoole
 RUN mkdir -p /home/www-data/www; chown www-data:www-data /home/www-data/www
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
