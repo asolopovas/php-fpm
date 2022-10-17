@@ -113,6 +113,7 @@ RUN apk add --no-cache \
 
 RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/fish -g www www
 RUN docker-php-ext-enable xdebug opcache swoole
-RUN mkdir -p /home/www-data/www; chown www-data:www-data /home/www-data/www
+RUN chown -R www:www /var/www
+
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
 RUN ln -sf $(which nvim) /usr/bin/vim
