@@ -1,5 +1,5 @@
 FROM surnet/alpine-wkhtmltopdf:3.10-0.12.6-small as wkhtmltopdf
-FROM php:8.1.6-fpm-alpine3.16
+FROM php:8.1.22-fpm-alpine3.18
 
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
@@ -7,6 +7,7 @@ COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
 # Install production dependencies
 RUN apk add --no-cache \
+    zip \
     shadow \
     freetype-dev \
     g++ \
@@ -59,8 +60,7 @@ RUN docker-php-ext-install gd
 RUN pecl install \
     imagick \
     redis \
-    swoole \
-    xdebug
+    swoole
 
 # Enable PECL and PEAR extensions
 RUN docker-php-ext-enable \
@@ -82,10 +82,14 @@ RUN docker-php-ext-install \
     xml \
     zip
 
+
+# Install xdebug
+RUN apk add --update linux-headers
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
+
 # Cleanup workspace dependencies
 RUN apk del -f .build-deps; rm -rf /tmp/*
-
-# www-data group/userid 1000
 
 RUN apk add --no-cache \
     gifsicle \
@@ -95,16 +99,13 @@ RUN apk add --no-cache \
     msmtp \
     optipng \
     pngquant \
-    php8-zip \
     python3 \
     python3-dev \
-    mysql-client \
     py-pip \
-    sudo \
-    su-exec \
-    rsync \
+    mysql-client \
     bash \
     fish \
+    rsync \
     sudo \
     fd \
     fzf \
