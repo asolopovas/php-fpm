@@ -31,7 +31,8 @@ RUN apk add --no-cache \
     ttf-droid \
     ttf-freefont \
     ttf-liberation \
-    zlib-dev
+    zlib-dev \
+    libzip
 
 # Install workspace dependencies
 RUN apk add --no-cache --virtual .build-deps \
@@ -82,7 +83,6 @@ RUN docker-php-ext-install \
     xml \
     zip
 
-
 # Install xdebug
 RUN apk add --update linux-headers
 RUN pecl install xdebug
@@ -98,23 +98,8 @@ RUN apk add --no-cache \
     libwebp-tools \
     msmtp \
     optipng \
-    pngquant \
-    python3 \
-    python3-dev \
-    py-pip \
-    mysql-client \
-    bash \
-    fish \
-    rsync \
-    sudo \
-    fd \
-    fzf \
-    ripgrep \
-    neovim
+    pngquant
 
-RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/fish -g www www
 RUN docker-php-ext-enable xdebug opcache swoole
-RUN chown -R www:www /var/www
 
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
-RUN ln -sf $(which nvim) /usr/bin/vim
