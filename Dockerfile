@@ -1,13 +1,12 @@
-FROM surnet/alpine-wkhtmltopdf:3.10-0.12.6-small as wkhtmltopdf
-FROM php:8.1.22-fpm-alpine3.18
-
+FROM surnet/alpine-wkhtmltopdf:3.18.0-0.12.6-small as wkhtmltopdf
+FROM php:8.1.25-fpm-alpine3.18
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
 # Install production dependencies
-RUN apk add --no-cache \
-    zip \
+RUN apk update && apk add --no-cache \
+    linux-headers \
     shadow \
     freetype-dev \
     g++ \
@@ -58,15 +57,16 @@ RUN docker-php-ext-configure gd \
 RUN docker-php-ext-install gd
 
 # Install PECL and PEAR extensions
-RUN pecl install \
-    imagick \
-    redis \
-    swoole
+RUN pecl install imagick
+RUN pecl install xdebug
+RUN pecl install swoole
+RUN pecl install redis
 
 # Enable PECL and PEAR extensions
 RUN docker-php-ext-enable \
     imagick \
-    redis
+    redis \
+    xdebug
 
 # Install php extensions
 RUN docker-php-ext-install \
@@ -86,7 +86,6 @@ RUN docker-php-ext-install \
 # Install xdebug
 RUN apk add --update linux-headers
 RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
 
 # Cleanup workspace dependencies
 RUN apk del -f .build-deps; rm -rf /tmp/*
@@ -98,7 +97,22 @@ RUN apk add --no-cache \
     libwebp-tools \
     msmtp \
     optipng \
-    pngquant
+    pngquant \
+    python3 \
+    python3-dev \
+    mysql-client \
+    py-pip \
+    sudo \
+    su-exec \
+    rsync \
+    bash \
+    fish \
+    sudo \
+    fd \
+    fzf \
+    ripgrep \
+    neovim \
+    php81-zip
 
 RUN docker-php-ext-enable xdebug opcache swoole
 
