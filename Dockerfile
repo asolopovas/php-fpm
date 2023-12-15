@@ -1,6 +1,6 @@
 FROM surnet/alpine-wkhtmltopdf:3.18.0-0.12.6-small as wkhtmltopdf
-FROM php:8.1.25-fpm-alpine3.18
-# Copy wkhtmltopdf files from docker-wkhtmltopdf image
+FROM php:8.2.13-fpm-alpine3.19
+
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
@@ -18,7 +18,6 @@ RUN apk update && apk add --no-cache \
     libx11 \
     libxrender \
     libxext \
-    libssl1.1 \
     make \
     oniguruma-dev \
     openssh-client \
@@ -43,7 +42,7 @@ RUN apk add --no-cache --virtual .build-deps \
     libpng-dev \
     libwebp-dev \
     libmcrypt-dev \
-	libzip-dev \
+    libzip-dev \
     libtool \
     libxml2-dev \
     postgresql-dev \
@@ -68,6 +67,12 @@ RUN docker-php-ext-enable \
     redis \
     xdebug
 
+RUN docker-php-ext-enable xdebug opcache swoole
+
+# IgBinary
+RUN pecl install igbinary
+RUN docker-php-ext-enable igbinary
+
 # Install php extensions
 RUN docker-php-ext-install \
     bcmath \
@@ -83,9 +88,6 @@ RUN docker-php-ext-install \
     xml \
     zip
 
-# Install xdebug
-RUN apk add --update linux-headers
-RUN pecl install xdebug
 
 # Cleanup workspace dependencies
 RUN apk del -f .build-deps; rm -rf /tmp/*
@@ -112,8 +114,8 @@ RUN apk add --no-cache \
     fzf \
     ripgrep \
     neovim \
-    php81-zip
+    php82-zip
 
-RUN docker-php-ext-enable xdebug opcache swoole
+
 
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
