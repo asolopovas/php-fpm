@@ -88,7 +88,6 @@ RUN docker-php-ext-install \
     xml \
     zip
 
-
 # Cleanup workspace dependencies
 RUN apk del -f .build-deps; rm -rf /tmp/*
 
