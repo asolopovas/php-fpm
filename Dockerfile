@@ -1,5 +1,5 @@
 FROM surnet/alpine-wkhtmltopdf:3.18.0-0.12.6-small as wkhtmltopdf
-FROM php:8.2.13-fpm-alpine3.19
+FROM php:8.3.2-fpm-alpine3.19
 
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
@@ -115,7 +115,5 @@ RUN apk add --no-cache \
     ripgrep \
     neovim \
     php82-zip
-
-
 
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
