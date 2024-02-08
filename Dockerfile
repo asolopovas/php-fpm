@@ -87,7 +87,7 @@ RUN docker-php-ext-install \
     xml \
     zip
 
-RUN docker-php-ext-configure intl && docker-php-ext-install intl
+RUN docker-php-ext-configure intl && docker-php-ext-install intl && docker-php-ext-enable intl
 
 # Cleanup workspace dependencies
 
