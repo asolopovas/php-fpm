@@ -29,7 +29,6 @@ RUN apk update && apk add --no-cache \
     ttf-droid \
     ttf-freefont \
     ttf-liberation \
-    zlib-dev \
     libzip
 
 # Install workspace dependencies
@@ -39,6 +38,7 @@ RUN apk add --no-cache --virtual .build-deps \
     icu-dev \
     imagemagick-dev \
     libjpeg-turbo-dev \
+    libmemcached-dev \
     libpng-dev \
     libwebp-dev \
     libmcrypt-dev \
@@ -46,7 +46,8 @@ RUN apk add --no-cache --virtual .build-deps \
     libtool \
     libxml2-dev \
     postgresql-dev \
-    sqlite-dev
+    sqlite-dev \
+    zlib-dev
 
 # Configure php extensions
 RUN docker-php-ext-configure gd \
@@ -60,6 +61,8 @@ RUN pecl install imagick
 RUN pecl install xdebug
 RUN pecl install swoole
 RUN pecl install redis
+RUN pecl install apcu
+RUN pecl install igbinary
 
 # Enable PECL and PEAR extensions
 RUN docker-php-ext-enable \
@@ -67,11 +70,7 @@ RUN docker-php-ext-enable \
     redis \
     xdebug
 
-RUN docker-php-ext-enable xdebug opcache swoole
-
-# IgBinary
-RUN pecl install igbinary
-RUN docker-php-ext-enable igbinary
+RUN docker-php-ext-enable xdebug opcache swoole apcu igbinary
 
 # Install php extensions
 RUN docker-php-ext-install \
@@ -88,8 +87,9 @@ RUN docker-php-ext-install \
     xml \
     zip
 
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
+
 # Cleanup workspace dependencies
-RUN apk del -f .build-deps; rm -rf /tmp/*
 
 RUN apk add --no-cache \
     gifsicle \
@@ -116,3 +116,5 @@ RUN apk add --no-cache \
     php82-zip
 
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
+
+RUN apk del -f .build-deps; rm -rf /tmp/*
