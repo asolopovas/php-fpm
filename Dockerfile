@@ -35,11 +35,6 @@ RUN apk update && apk add --no-cache \
 RUN apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
     freetype-dev \
-<<<<<<< HEAD
-    icu \
-    icu-dev \
-=======
->>>>>>> a6b7d82 (save)
     imagemagick-dev \
     libjpeg-turbo-dev \
     libmemcached-dev \
