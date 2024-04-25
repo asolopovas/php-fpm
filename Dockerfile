@@ -13,6 +13,8 @@ RUN apk update && apk add --no-cache \
     gcc \
     git \
     imagemagick \
+    libavif \
+    libavif-dev \
     libc-dev \
     libstdc++ \
     libx11 \
@@ -52,6 +54,7 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN docker-php-ext-configure gd \
     --with-freetype \
     --with-jpeg \
+    --with-avif \
     --with-webp
 RUN docker-php-ext-install gd
 
