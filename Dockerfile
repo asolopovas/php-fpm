@@ -1,8 +1,4 @@
-FROM surnet/alpine-wkhtmltopdf:3.18.0-0.12.6-small as wkhtmltopdf
-FROM php:8.3.2-fpm-alpine3.19
-
-COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
-COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
+FROM php:8.3.14-fpm-alpine3.20
 
 # Install production dependencies
 RUN apk update && apk add --no-cache \
