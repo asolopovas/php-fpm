@@ -20,5 +20,5 @@ docker-push:
 	docker push asolopovas/php-fpm:latest
 
 clean:
-	# Example: docker rmi asolopovas/php-fpm:$(shell cat Version)
-	# This command is just an example. Adjust based on your needs.
+	$(eval VERSION=$(shell cat Version))
+	docker rmi asolopovas/php-fpm:$(VERSION)
